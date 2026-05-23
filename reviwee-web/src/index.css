@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+@theme {
+  --color-primary: #1C1A5E;
+  --color-secondary: #778FF0;
+  --color-correct: #E8FFC1;
+  --color-wrong: #FFC1EA;
+  --color-light: #DBEAFE
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Thin scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-secondary);
+  border-radius: 1px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(119, 143, 240, 0.8);
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox support */
+.scrollbar-thin {
+  scrollbar-width:thin;
+  scrollbar-color: var(--color-secondary) transparent;
+}
+.my-swal-popup {
+  height: 350px; /* your desired height */
+}

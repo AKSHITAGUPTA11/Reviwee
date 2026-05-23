@@ -1,0 +1,29 @@
+# ============================================================
+# Reviwee API — Dockerfile
+# Development Docker Setup
+# ============================================================
+
+FROM node:20-alpine
+
+# Install required build tools
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --legacy-peer-deps
+
+# Copy full project
+COPY . .
+
+# Create uploads directory
+RUN mkdir -p /app/public/uploads
+
+# Expose backend port
+EXPOSE 6000
+
+# Start backend server
+CMD ["node", "server.js"]

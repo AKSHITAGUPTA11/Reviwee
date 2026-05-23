@@ -1,0 +1,130 @@
+name: reviwee
+
+services:
+
+  mongodb:
+    image: mongo:7.0
+    container_name: reviwee-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - reviwee-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: reviwee-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - reviwee-network
+
+  reviwee-api:
+    build:
+      context: ./reviwee-api
+      dockerfile: Dockerfile
+    container_name: reviwee-api
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      PROJECT_NAME: reviwee
+      NODE_ENV: development
+      PORT: 7000
+      MONGODB_URL: mongodb://reviwee-mongodb:27017/reviwee_db
+      REDIS_HOST: reviwee-redis
+      REDIS_PORT: 6379
+      JWT_SECRET_ACCESS: reviwee_access_secret_key_2024_do_not_share
+      JWT_SECRET_REFRESH: reviwee_refresh_secret_key_2024_do_not_share
+      JWT_SECRET_OTP_VERIFY: reviwee_otp_verify_secret_key_2024_do_not_share
+      JWT_EXPIRATION_ACCESS: "74 hours"
+      JWT_EXPIRATION_REFRESH: 1y
+      JWT_EXPIRATION_OTP_VERIFY: 10m
+      GOOGLE_CLIENT_ID: your_google_client_id_here
+      RAZORPAY_WEBHOOK_SECRET: your_razorpay_webhook_secret_here
+      RABBITMQ_URL: amqp://localhost
+      GATEWAY_HASH_SECRET: reviwee_gateway_hash_secret_2024
+    ports:
+      - "7000:7000"
+    volumes:
+      - api_uploads:/app/public/uploads
+    networks:
+      - reviwee-network
+
+  reviwee-super-admin:
+    build:
+      context: ./reviwee-super-admin
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_BASE_URL: http://localhost:6000/v1
+        VITE_APP_SOCKET_URL: http://localhost:6000
+        VITE_APP_GOOGLE_CLINT_ID: ""
+    container_name: reviwee-super-admin
+    restart: unless-stopped
+    depends_on:
+      - reviwee-api
+    ports:
+      - "3000:80"
+    networks:
+      - reviwee-network
+
+  reviwee-user-admin:
+    build:
+      context: ./reviwee-user-admin
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_BASE_URL: http://localhost:6000/v1
+        VITE_APP_SOCKET_URL: http://localhost:6000
+        VITE_APP_GOOGLE_CLINT_ID: ""
+    container_name: reviwee-user-admin
+    restart: unless-stopped
+    depends_on:
+      - reviwee-api
+    ports:
+      - "3001:80"
+    networks:
+      - reviwee-network
+
+  reviwee-web:
+    build:
+      context: ./reviwee-web
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_BASE_URL: http://localhost:6000/v1
+    container_name: reviwee-web
+    restart: unless-stopped
+    depends_on:
+      - reviwee-api
+    ports:
+      - "3002:80"
+    networks:
+      - reviwee-network
+
+volumes:
+  mongodb_data:
+    driver: local
+  api_uploads:
+    driver: local
+
+networks:
+  reviwee-network:
+    driver: bridge
+    name: reviwee-network
