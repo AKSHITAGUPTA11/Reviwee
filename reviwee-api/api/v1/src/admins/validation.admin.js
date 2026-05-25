@@ -3,9 +3,6 @@ Joi.joiDate = require("@joi/date")(Joi);
 Joi.joiObjectId = require("joi-objectid")(Joi);
 const commonValidation = require("../../helper/commonValidation");
 
-/**
- * create new document
- */
 const create = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -14,9 +11,6 @@ const create = {
   }),
 };
 
-/**
- * update existing document
- */
 const update = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -27,9 +21,6 @@ const update = {
   }),
 };
 
-/**
- * update profile existing document
- */
 const updateProfile = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -37,9 +28,6 @@ const updateProfile = {
   }),
 };
 
-/**
- * filter and pagination api
- */
 const getAllFilter = {
   body: Joi.object().keys({
     params: Joi.array().items(Joi.string().required()),
@@ -81,9 +69,6 @@ const getAllFilter = {
   }),
 };
 
-/**
- * get either all data or single document
- */
 const get = {
   query: Joi.object()
     .keys({
@@ -93,9 +78,6 @@ const get = {
     .optional(),
 };
 
-/**
- * delete a document
- */
 const deleteDocument = {
   params: Joi.object().keys({
     id: Joi.string().custom(commonValidation.objectId).required(),
@@ -114,17 +96,12 @@ const getaccessByUserId = {
   }),
 };
 
-/**
- * change status of document
- */
 const changeStatus = {
   params: Joi.object().keys({
     id: Joi.string().custom(commonValidation.objectId).required(),
   }),
 };
-/**
- * resetPasswordValid of document
- */
+
 const resetPasswordValid = {
   params: Joi.object().keys({
     id: Joi.string().custom(commonValidation.objectId).required(),
@@ -137,30 +114,15 @@ const resetPasswordValid = {
 };
 
 /**
- * login
+ * login - sirf email aur password ← FIXED
  */
 const loginValid = {
   body: Joi.object({
-    email: Joi.string().email().allow(""),
-    password: Joi.string().allow(""),
-    googleToken: Joi.string().allow(""),
-  })
-    .when(Joi.object({ googleToken: Joi.string().empty("") }).unknown(), {
-      then: Joi.object({
-        email: Joi.required(),
-        password: Joi.required(),
-      }),
-    })
-    .when(Joi.object({ email: Joi.string().empty("") }).unknown(), {
-      then: Joi.object({
-        googleToken: Joi.required(),
-      }),
-    }),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  }),
 };
 
-/**
- * changePassword
- */
 const changePasswordValid = {
   body: Joi.object()
     .keys({
@@ -186,9 +148,6 @@ const forgotPasswordValid = {
     .required(),
 };
 
-/**
- * exports
- */
 module.exports = {
   create,
   getAllFilter,
