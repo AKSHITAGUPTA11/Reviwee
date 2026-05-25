@@ -74,8 +74,8 @@ services:
       context: ./reviwee-super-admin
       dockerfile: Dockerfile
       args:
-        VITE_APP_BASE_URL: http://localhost:6000/v1
-        VITE_APP_SOCKET_URL: http://localhost:6000
+        VITE_APP_BASE_URL: http://localhost:7000/v1
+        VITE_APP_SOCKET_URL: http://localhost:7000
         VITE_APP_GOOGLE_CLINT_ID: ""
     container_name: reviwee-super-admin
     restart: unless-stopped
@@ -91,8 +91,8 @@ services:
       context: ./reviwee-user-admin
       dockerfile: Dockerfile
       args:
-        VITE_APP_BASE_URL: http://localhost:6000/v1
-        VITE_APP_SOCKET_URL: http://localhost:6000
+        VITE_APP_BASE_URL: http://localhost:7000/v1
+        VITE_APP_SOCKET_URL: http://localhost:7000
         VITE_APP_GOOGLE_CLINT_ID: ""
     container_name: reviwee-user-admin
     restart: unless-stopped
@@ -108,7 +108,7 @@ services:
       context: ./reviwee-web
       dockerfile: Dockerfile
       args:
-        VITE_APP_BASE_URL: http://localhost:6000/v1
+        VITE_APP_BASE_URL: http://localhost:7000/v1
     container_name: reviwee-web
     restart: unless-stopped
     depends_on:
