@@ -14,6 +14,7 @@ const googleClient = new OAuth2Client(config.google_client_id);
  *  - has email + password → "email"
  */
 const detectLoginType = (body) => {
+  if (!body) return null;  
   if (body.googleToken) return loginTypeEnum.GOOGLE;
   if (body.facebookToken) return loginTypeEnum.FACEBOOK;
   if (body.appleToken) return loginTypeEnum.APPLE;

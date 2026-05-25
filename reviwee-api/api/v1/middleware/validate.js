@@ -26,7 +26,9 @@ const validate = (schema) => (req, res, next) => {
     });
     // return next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
   }
-  Object.assign(req, value);
+req.body = Object.assign({}, req.body, value.body || {});
+req.params = Object.assign({}, req.params, value.params || {});
+req.query = Object.assign({}, req.query, value.query || {});
   return next();
 };
 
